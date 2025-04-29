@@ -23,3 +23,5 @@ mod tests {
         assert(fib(16) == 987, 'it works!');
     }
 }
+
+mod RoomManager;
