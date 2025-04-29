@@ -1,37 +1,67 @@
-name: Backend Python CI
+name: Backend CI
 
 on:
   push:
     paths:
       - 'backend/**'
+    branches: [main, develop]
   pull_request:
     paths:
       - 'backend/**'
+    branches: [main, develop]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      
       - name: Install Poetry
-        run: pip install poetry
-
+        uses: snok/install-poetry@v1  
+        with:
+          version: '1.5.1'
+      
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-root
+      
+      - name: Run Black
+        run: poetry run black --check backend/
+      
+      - name: Run Flake8
+        run: poetry run flake8 backend/
+      
+      - name: Run pytest
+        run: poetry run pytest backend/
 
-      - name: Run Lint and Format checks
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+      
+      - name: Install dependencies
+        run: poetry install --no-root
+      
+      - name: Deploy to Railway
         run: |
-          poetry run black --check backend/
-          poetry run flake8 backend/
-
-      - name: Run Tests
-        run: |
-          poetry run pytest backend/
+          # Install Railway CLI if needed
+          npm install -g @railway/cli
+          railway up --detach
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

@@ -1,33 +1,41 @@
-name: Frontend Next.js CI
+name: Frontend CI
 
 on:
   push:
     paths:
       - 'frontend/**'
+    branches: [main, develop]
   pull_request:
     paths:
       - 'frontend/**'
+    branches: [main, develop]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
+          cache: 'pnpm'
+      
       - name: Install pnpm
-        run: npm install -g pnpm
-
+        uses: pnpm/action-setup@v2  
+        with:
+          version: 8
+      
       - name: Install dependencies
         run: pnpm install
-
-      - name: Run Lint and Build
-        run: |
-          pnpm lint
-          pnpm build
+      
+      - name: Run ESLint
+        run: pnpm lint
+      
+      - name: Run Prettier
+        run: pnpm format:check
+      
+      - name: Build Next.js
+        run: pnpm build
