@@ -63,7 +63,11 @@ function CopyButton({
       className={className}
     >
       <span aria-hidden className={iconClassName}>
-        {isCopied ? <CheckIcon /> : <CopyIcon />}
+        {isCopied ? (
+          <CheckIcon className="h-4 w-4" />
+        ) : (
+          <CopyIcon className="w-4 h-4" />
+        )}
       </span>
     </button>
   );

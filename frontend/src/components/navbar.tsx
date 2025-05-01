@@ -142,13 +142,14 @@ export default function Navbar() {
                           isDropdownOpen ? "rotate-180" : ""
                         }`}
                       >
-                        <ChevronDown />
+                        <ChevronDown className="w-4 h-4 cursor-pointer" />
                       </span>
                     </button>
 
-                    <div className="cursor-pointer">
-                      <CopyButton copyText={account || ""} />
-                    </div>
+                    <CopyButton
+                      copyText={account || ""}
+                      className="cursor-pointer"
+                    />
                   </div>
 
                   {isDropdownOpen && (
@@ -166,9 +167,6 @@ export default function Navbar() {
                         >
                           View Profile
                         </Link>
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
-                          Settings
-                        </button>
                       </div>
                     </div>
                   )}
