@@ -3,13 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogOutIcon, Menu, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useWalletContext } from "./wallet-provider";
 import AnimationWrapper from "../motion/animation-wrapper";
 import WalletConnectModal from "./wallet-connect-modal";
 import WalletDisconnectModal from "./wallet-disconnect";
 import CopyButton from "./copy-buton";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -71,7 +72,11 @@ export default function Navbar() {
     setIsDisconnectModalOpen(false);
   };
 
-  const navLinks = [{ name: "FAQs", href: "/#faqs" }];
+  const navLinks = [
+    { href: "#rooms", name: "Rooms" },
+    { href: "#agents", name: "Agents" },
+    { href: "#how-it-works", name: "PvPvAI" },
+  ];
 
   return (
     <>
@@ -82,41 +87,123 @@ export default function Navbar() {
             : "bg-transparent py-4"
         }`}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="container mx-auto pl-4 pr-4 lg:px-20 flex items-center justify-between">
           <AnimationWrapper variant="slideRight">
-            <Link href="/" className="text-white text-lg font-bold">
-              logo
+            <Link href="/">
+              <h1
+                className="text-2xl md:text-4xl font-bold text-white font-mono leading-tight tracking-wider"
+                style={{ textShadow: "3px 3px 0px #0f2a0f" }}
+              >
+                <span className="text-[#4eff4e]">PVP</span>V
+                <span className="text-[#4eff4e]">AI</span>
+              </h1>
             </Link>
           </AnimationWrapper>
 
-          <nav className="hidden md:flex items-center">
-            {navLinks.map((link) => (
-              <AnimationWrapper variant="slideRight" key={link.name}>
-                <Link
-                  href={link.href}
-                  className="mx-4 text-gray-200 hover:text-green-400 font-medium transition-colors"
-                >
-                  {link.name}
-                </Link>
-              </AnimationWrapper>
-            ))}
-          </nav>
+          <div className="flex items-center justify-center gap-2">
+            <nav className="hidden md:flex items-center">
+              {navLinks.map((link) => (
+                <AnimationWrapper variant="slideRight" key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="mx-4 text-gray-200 hover:text-green-400 font-medium transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </AnimationWrapper>
+              ))}
+            </nav>
 
-          {/* Desktop Wallet */}
-          <div className="hidden md:block">
+            {/* Desktop Wallet */}
+            <div className="hidden md:block">
+              <AnimationWrapper variant="slideLeft">
+                {!account ? (
+                  <Button
+                    className="bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] font-mono border-b-2 border-[#2c582c] hover:translate-y-1 transition-all"
+                    onClick={handleConnectWallet}
+                  >
+                    Connect Wallet
+                  </Button>
+                ) : (
+                  <div className="relative" ref={dropdownRef}>
+                    <div
+                      onClick={handleWalletClick}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-gray-800 bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] cursor-pointer hover:border-gray-600 transition-colors"
+                    >
+                      <div className="h-8 w-8 rounded-full border-2 border-green-500 overflow-hidden">
+                        <Image
+                          src="/avatar.jpg"
+                          alt="Wallet Avatar"
+                          width={32}
+                          height={32}
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="text-white font-medium">
+                        {account.slice(0, 6)}…{account.slice(-4)}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDropdown();
+                        }}
+                        className="h-8 w-8 text-green-400 hover:text-white transition-transform"
+                      >
+                        <span
+                          className={`inline-block transform transition-transform duration-300 ${
+                            isDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        >
+                          <ChevronDown className="w-4 h-4 text-white cursor-pointer" />
+                        </span>
+                      </button>
+
+                      <CopyButton
+                        copyText={account || ""}
+                        className="cursor-pointer"
+                      />
+                    </div>
+
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 rounded-md  border-2 border-[#3c6e3c] shadow-lg overflow-hidden">
+                        <div className="bg-[#0f2a0f] p-2 space-y-4 text-[#a3ffa3] font-mono">
+                          <button
+                            onClick={handleWalletClick}
+                            className="hover:text-[#baf9ba] text-[#4eff4e] cursor-pointer flex items-center gap-2"
+                          >
+                            <LogOutIcon className="h-4 w-4" />
+                            Disconnect
+                          </button>
+                          <Link
+                            href="#"
+                            className=" text-[#4eff4e] hover:text-[#baf9ba] cursor-pointer flex items-center gap-2"
+                          >
+                            <User className="h-4 w-4" />
+                            View Profile
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </AnimationWrapper>
+            </div>
+          </div>
+          {/* Mobile Wallet + Menu */}
+          <div className="md:hidden flex items-center">
             <AnimationWrapper variant="slideLeft">
               {!account ? (
-                <button
+                <Button
+                  className="bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] font-mono border-b-2 border-[#2c582c] hover:translate-y-1 transition-all"
                   onClick={handleConnectWallet}
-                  className="px-5 py-2 rounded-full bg-emerald-950 hover:bg-emerald-600 text-white font-semibold transition-colors"
                 >
                   Connect Wallet
-                </button>
+                </Button>
               ) : (
                 <div className="relative" ref={dropdownRef}>
                   <div
                     onClick={handleWalletClick}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-gray-800 cursor-pointer hover:border-gray-600 transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-gray-800 bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] cursor-pointer hover:border-gray-600 transition-colors"
                   >
                     <div className="h-8 w-8 rounded-full border-2 border-green-500 overflow-hidden">
                       <Image
@@ -142,7 +229,7 @@ export default function Navbar() {
                           isDropdownOpen ? "rotate-180" : ""
                         }`}
                       >
-                        <ChevronDown className="w-4 h-4 cursor-pointer" />
+                        <ChevronDown className="w-4 h-4 text-white cursor-pointer" />
                       </span>
                     </button>
 
@@ -153,18 +240,20 @@ export default function Navbar() {
                   </div>
 
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#0d0e24] border border-gray-800 overflow-hidden">
-                      <div className="py-1">
+                    <div className="absolute right-0 mt-2 w-48 rounded-md  border-2 border-[#3c6e3c] shadow-lg overflow-hidden">
+                      <div className="bg-[#0f2a0f] p-2 space-y-4 text-[#a3ffa3] font-mono">
                         <button
                           onClick={handleWalletClick}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-800 transition-colors"
+                          className="hover:text-[#baf9ba] text-[#4eff4e] cursor-pointer flex items-center gap-2"
                         >
+                          <LogOutIcon className="h-4 w-4" />
                           Disconnect
                         </button>
                         <Link
                           href="#"
-                          className="w-full block text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-800 transition-colors"
+                          className=" text-[#4eff4e] hover:text-[#baf9ba] cursor-pointer flex items-center gap-2"
                         >
+                          <User className="h-4 w-4" />
                           View Profile
                         </Link>
                       </div>
@@ -173,40 +262,8 @@ export default function Navbar() {
                 </div>
               )}
             </AnimationWrapper>
-          </div>
 
-          {/* Mobile Wallet + Menu */}
-          <div className="md:hidden flex items-center">
-            <AnimationWrapper variant="slideLeft">
-              {!account ? (
-                <button
-                  onClick={handleConnectWallet}
-                  className="px-4 py-1.5 mr-4 rounded-full bg-teal-500 text-white text-sm font-medium hover:bg-teal-600 transition-colors"
-                >
-                  Connect Wallet
-                </button>
-              ) : (
-                <div
-                  onClick={handleWalletClick}
-                  className="flex items-center gap-2 px-2 py-1 mr-4 rounded-full bg-[#0d0e24] border border-gray-800 cursor-pointer"
-                >
-                  <div className="h-6 w-6 rounded-full border border-teal-500 overflow-hidden">
-                    <Image
-                      src="/icons/braavos.png"
-                      alt="Wallet Avatar"
-                      width={24}
-                      height={24}
-                      className="object-cover"
-                    />
-                  </div>
-                  <span className="text-white text-xs font-medium">
-                    {account.slice(0, 6)}…{account.slice(-4)}
-                  </span>
-                </div>
-              )}
-            </AnimationWrapper>
-
-            <CopyButton copyText={account || ""} />
+            <Menu onClick={toggleMenu} className="ml-2" />
           </div>
         </div>
 

@@ -2,6 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Button } from "./ui/button";
 
 interface WalletDisconnectModalProps {
   isOpen: boolean;
@@ -51,54 +53,43 @@ export default function WalletDisconnectModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <>
           <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 backdrop-blur-[4px] flex items-center justify-center"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={onClose}
           />
-
-          <motion.div
-            className="relative w-full max-w-sm rounded-2xl bg-emerald-950 p-6 shadow-xl"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <div className="flex items-center justify-between mb-8 px-10">
-              <h2 className="text-xl font-semibold text-white">
-                Disconnect Wallet
-              </h2>
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-white transition-colors"
+          <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="bg-[#0f2a0f] border-2 border-[#3c6e3c] text-white font-mono sm:max-w-md">
+              <motion.div
+                className="relative w-full max-w-sm rounded-2xl  p-6 "
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
               >
-                <X size={20} />
-              </button>
-            </div>
+                <div className="flex justify-center items-center gap-2 mt-8 w-full">
+                  <Button
+                    className="w-1/2 bg-transparent hover:text-[#0f2a0f] hover:bg-[#3ccc3c] text-white font-mono border-2 border-[#2c582c] hover:translate-y-1 transition-all"
+                    onClick={onClose}
+                  >
+                    Cancel
+                  </Button>
 
-           
-
-            <div className="flex justify-between gap-2 mt-8">
-              <button
-                className=" w-full rounded-[48px] text-center border border-gray-700 text-white font-medium hover:bg-gray-800 transition-colors"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-
-              <button
-                className=" py-3 w-full text-center rounded-[48px] bg-teal-500 text-white font-medium hover:bg-teal-600 transition-colors"
-                onClick={handleDisconnect}
-              >
-                Disconnect Wallet
-              </button>
-            </div>
-          </motion.div>
-        </div>
+                  <Button
+                    className="w-1/2 bg-[#4eff4e] hover:text-white hover:bg-transparent text-[#0f2a0f] font-mono border-2 border-[#2c582c] hover:translate-y-1 transition-all"
+                    onClick={handleDisconnect}
+                  >
+                    Disconnect Wallet
+                  </Button>
+                </div>
+              </motion.div>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </AnimatePresence>
   );
