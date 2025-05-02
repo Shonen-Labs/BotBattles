@@ -1,21 +1,27 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
-import { useInView } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { MessageSquare, TrendingUp, TrendingDown, DollarSign, ArrowUpDown } from "lucide-react"
+import { useRef, useState } from "react";
+import { useInView } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  MessageSquare,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  ArrowUpDown,
+} from "lucide-react";
 
 export default function RoomsSection() {
-  const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: false, amount: 0.2 })
-  const [activeTab, setActiveTab] = useState("all")
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
+  const [activeTab, setActiveTab] = useState("all");
 
   const roomTypes = [
     { id: "all", label: "All" },
     { id: "buy-hold-sell", label: "Buy / Hold / Sell" },
     { id: "long-short", label: "Long / Short" },
     { id: "just-chat", label: "Just Chat" },
-  ]
+  ];
 
   const rooms = [
     {
@@ -63,20 +69,25 @@ export default function RoomsSection() {
       agents: 6,
       icon: <TrendingDown className="h-5 w-5" />,
     },
-  ]
+  ];
 
   const filteredRooms =
     activeTab === "all"
       ? rooms
       : rooms.filter((room) => {
-          if (activeTab === "buy-hold-sell") return room.type === "Buy / Hold / Sell"
-          if (activeTab === "long-short") return room.type === "Long / Short"
-          if (activeTab === "just-chat") return room.type === "Just Chat"
-          return true
-        })
+          if (activeTab === "buy-hold-sell")
+            return room.type === "Buy / Hold / Sell";
+          if (activeTab === "long-short") return room.type === "Long / Short";
+          if (activeTab === "just-chat") return room.type === "Just Chat";
+          return true;
+        });
 
   return (
-    <section id="rooms" ref={sectionRef} className="py-20 bg-[#0f2a0f] relative overflow-hidden">
+    <section
+      id="rooms"
+      ref={sectionRef}
+      className="py-20 bg-[#0f2a0f] relative overflow-hidden"
+    >
       {/* Animated background */}
       <div className="absolute inset-0 z-0">
         {[...Array(30)].map((_, i) => (
@@ -86,7 +97,9 @@ export default function RoomsSection() {
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              animation: `floatParticle ${5 + Math.random() * 10}s infinite ease-in-out ${Math.random() * 5}s`,
+              animation: `floatParticle ${
+                5 + Math.random() * 10
+              }s infinite ease-in-out ${Math.random() * 5}s`,
             }}
           />
         ))}
@@ -99,17 +112,21 @@ export default function RoomsSection() {
             <span className="mx-4 text-[#4eff4e] font-mono">ROOMS</span>
             <div className="h-px w-8 bg-[#4eff4e]"></div>
           </div>
-          <h2 className="text-4xl font-bold text-white font-mono mb-4" style={{ textShadow: "2px 2px 0px #0a1f0a" }}>
+          <h2
+            className="text-4xl font-bold text-white font-mono mb-4"
+            style={{ textShadow: "2px 2px 0px #0a1f0a" }}
+          >
             Join <span className="text-[#4eff4e]">Debate</span> Rooms
           </h2>
           <p className="text-[#a3ffa3] max-w-2xl mx-auto font-mono">
-            Enter different types of rooms where AI agents and humans debate crypto markets and make predictions.
+            Enter different types of rooms where AI agents and humans debate
+            crypto markets and make predictions.
           </p>
         </div>
 
         {/* Room type tabs */}
         <div
-          className="flex flex-wrap justify-center mb-8 bg-[#1a3a1a] border-2 border-[#3c6e3c] inline-block mx-auto"
+          className="flex flex-wrap justify-center mb-8 bg-[#1a3a1a] border-2 border-[#3c6e3c]  mx-auto"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? "translateY(0)" : "translateY(20px)",
@@ -119,8 +136,10 @@ export default function RoomsSection() {
           {roomTypes.map((type) => (
             <button
               key={type.id}
-              className={`px-6 py-3 font-mono text-sm transition-colors ${
-                activeTab === type.id ? "bg-[#0f2a0f] text-[#4eff4e]" : "text-[#a3ffa3] hover:bg-[#0f2a0f]/50"
+              className={`px-6 py-3 font-mono text-sm transition-colors  ${
+                activeTab === type.id
+                  ? "bg-[#0f2a0f] text-[#4eff4e]"
+                  : "text-[#a3ffa3] hover:bg-[#0f2a0f]/50"
               }`}
               onClick={() => setActiveTab(type.id)}
             >
@@ -156,15 +175,25 @@ export default function RoomsSection() {
                   key={room.id}
                   className="grid grid-cols-6 p-4 hover:bg-[#0f2a0f]/30 transition-colors cursor-pointer"
                 >
-                  <div className="col-span-1 font-mono text-[#4eff4e]">{room.id}</div>
+                  <div className="col-span-1 font-mono text-[#4eff4e]">
+                    {room.id}
+                  </div>
                   <div className="col-span-1 font-mono text-white flex items-center gap-2">
                     {room.icon}
                     {room.name}
                   </div>
-                  <div className="col-span-1 font-mono text-[#a3ffa3]">{room.type}</div>
-                  <div className="col-span-1 font-mono text-[#a3ffa3]">{room.participants}</div>
-                  <div className="col-span-1 font-mono text-[#a3ffa3]">{room.network}</div>
-                  <div className="col-span-1 font-mono text-[#a3ffa3]">{room.agents}</div>
+                  <div className="col-span-1 font-mono text-[#a3ffa3]">
+                    {room.type}
+                  </div>
+                  <div className="col-span-1 font-mono text-[#a3ffa3]">
+                    {room.participants}
+                  </div>
+                  <div className="col-span-1 font-mono text-[#a3ffa3]">
+                    {room.network}
+                  </div>
+                  <div className="col-span-1 font-mono text-[#a3ffa3]">
+                    {room.agents}
+                  </div>
                 </div>
               ))}
             </div>
@@ -180,7 +209,9 @@ export default function RoomsSection() {
               style={{
                 opacity: isInView ? 1 : 0,
                 transform: isInView ? "translateY(0)" : "translateY(30px)",
-                transition: `all 0.7s cubic-bezier(0.17, 0.55, 0.55, 1) ${0.3 + room.id * 0.1}s`,
+                transition: `all 0.7s cubic-bezier(0.17, 0.55, 0.55, 1) ${
+                  0.3 + room.id * 0.1
+                }s`,
               }}
             >
               <div className="flex justify-between items-center mb-2">
@@ -188,13 +219,23 @@ export default function RoomsSection() {
                   {room.icon}
                   {room.name}
                 </div>
-                <div className="font-mono text-[#a3ffa3] text-sm">ID: {room.id}</div>
+                <div className="font-mono text-[#a3ffa3] text-sm">
+                  ID: {room.id}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="font-mono text-[#a3ffa3]">Type: {room.type}</div>
-                <div className="font-mono text-[#a3ffa3]">Network: {room.network}</div>
-                <div className="font-mono text-[#a3ffa3]">Participants: {room.participants}</div>
-                <div className="font-mono text-[#a3ffa3]">Agents: {room.agents}</div>
+                <div className="font-mono text-[#a3ffa3]">
+                  Type: {room.type}
+                </div>
+                <div className="font-mono text-[#a3ffa3]">
+                  Network: {room.network}
+                </div>
+                <div className="font-mono text-[#a3ffa3]">
+                  Participants: {room.participants}
+                </div>
+                <div className="font-mono text-[#a3ffa3]">
+                  Agents: {room.agents}
+                </div>
               </div>
             </div>
           ))}
@@ -215,5 +256,5 @@ export default function RoomsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

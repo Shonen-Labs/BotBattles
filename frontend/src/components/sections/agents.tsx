@@ -1,22 +1,26 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
-import { useInView } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Bot, Plus, Activity, Wallet } from "lucide-react"
+import { useRef, useState } from "react";
+import { useInView } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Bot, Plus, Activity, Wallet } from "lucide-react";
 
 export default function AgentsSection() {
-  const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: false, amount: 0.2 })
-  const [activeTab, setActiveTab] = useState("active")
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
+  const [activeTab, setActiveTab] = useState("active");
 
   const agentTypes = [
     { id: "active", label: "Active" },
     { id: "inactive", label: "Inactive" },
-  ]
+  ];
 
   return (
-    <section id="agents" ref={sectionRef} className="py-20 bg-[#1a3a1a] relative overflow-hidden">
+    <section
+      id="agents"
+      ref={sectionRef}
+      className="py-20 bg-[#1a3a1a] relative overflow-hidden"
+    >
       {/* Pixel grid overlay */}
       <div
         className="absolute inset-0 z-0 opacity-10"
@@ -34,17 +38,21 @@ export default function AgentsSection() {
             <span className="mx-4 text-[#4eff4e] font-mono">AGENTS</span>
             <div className="h-px w-8 bg-[#4eff4e]"></div>
           </div>
-          <h2 className="text-4xl font-bold text-white font-mono mb-4" style={{ textShadow: "2px 2px 0px #0f2a0f" }}>
+          <h2
+            className="text-4xl font-bold text-white font-mono mb-4"
+            style={{ textShadow: "2px 2px 0px #0f2a0f" }}
+          >
             Deploy <span className="text-[#4eff4e]">AI</span> Agents
           </h2>
           <p className="text-[#a3ffa3] max-w-2xl mx-auto font-mono">
-            Create and customize AI agents with different personality traits to represent your strategy in debates.
+            Create and customize AI agents with different personality traits to
+            represent your strategy in debates.
           </p>
         </div>
 
         {/* Agent type tabs */}
         <div
-          className="flex flex-wrap justify-center mb-8 bg-[#0f2a0f] border-2 border-[#3c6e3c] inline-block mx-auto"
+          className="flex flex-wrap justify-center mb-8 bg-[#0f2a0f] border-2 border-[#3c6e3c] mx-auto"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? "translateY(0)" : "translateY(20px)",
@@ -55,7 +63,9 @@ export default function AgentsSection() {
             <button
               key={type.id}
               className={`px-6 py-3 font-mono text-sm transition-colors ${
-                activeTab === type.id ? "bg-[#1a3a1a] text-[#4eff4e]" : "text-[#a3ffa3] hover:bg-[#1a3a1a]/50"
+                activeTab === type.id
+                  ? "bg-[#1a3a1a] text-[#4eff4e]"
+                  : "text-[#a3ffa3] hover:bg-[#1a3a1a]/50"
               }`}
               onClick={() => setActiveTab(type.id)}
             >
@@ -84,7 +94,9 @@ export default function AgentsSection() {
             </div>
 
             {/* No agents message */}
-            <div className="p-12 text-center font-mono text-[#a3ffa3]">No agents found</div>
+            <div className="p-12 text-center font-mono text-[#a3ffa3]">
+              No agents found
+            </div>
           </div>
         </div>
 
@@ -99,7 +111,9 @@ export default function AgentsSection() {
             }}
           >
             {/* No agents message */}
-            <div className="text-center font-mono text-[#a3ffa3]">No agents found</div>
+            <div className="text-center font-mono text-[#a3ffa3]">
+              No agents found
+            </div>
           </div>
         </div>
 
@@ -114,9 +128,12 @@ export default function AgentsSection() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-2xl font-bold text-[#4eff4e] font-mono mb-4">Create Your First Agent</h3>
+              <h3 className="text-2xl font-bold text-[#4eff4e] font-mono mb-4">
+                Create Your First Agent
+              </h3>
               <p className="text-[#a3ffa3] font-mono mb-6">
-                Deploy an AI agent with a unique personality to represent your strategy in crypto debates.
+                Deploy an AI agent with a unique personality to represent your
+                strategy in crypto debates.
               </p>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center gap-2 text-[#a3ffa3] font-mono">
@@ -154,12 +171,20 @@ export default function AgentsSection() {
                 {/* Agent stats */}
                 <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-8">
                   <div className="text-center">
-                    <div className="text-[#4eff4e] font-mono text-xl font-bold">0%</div>
-                    <div className="text-[#a3ffa3] font-mono text-xs">Win Rate</div>
+                    <div className="text-[#4eff4e] font-mono text-xl font-bold">
+                      0%
+                    </div>
+                    <div className="text-[#a3ffa3] font-mono text-xs">
+                      Win Rate
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[#4eff4e] font-mono text-xl font-bold">0.00</div>
-                    <div className="text-[#a3ffa3] font-mono text-xs">Earnings</div>
+                    <div className="text-[#4eff4e] font-mono text-xl font-bold">
+                      0.00
+                    </div>
+                    <div className="text-[#a3ffa3] font-mono text-xs">
+                      Earnings
+                    </div>
                   </div>
                 </div>
               </div>
@@ -168,5 +193,5 @@ export default function AgentsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
