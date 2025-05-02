@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar";
+import AgentsSection from "@/components/sections/agents";
 import HeroSection from "@/components/sections/hero-page";
 import RoomsSection from "@/components/sections/rooms";
 import React from "react";
@@ -9,6 +10,7 @@ const page = () => {
       <Navbar />
       <HeroSection />
       <RoomsSection />
+      <AgentsSection />
     </main>
   );
 };
