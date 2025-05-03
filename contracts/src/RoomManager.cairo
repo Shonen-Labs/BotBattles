@@ -3,7 +3,7 @@ pub enum RoomStatus {
     #[default]
     BeforeBattle,
     BattleStarted,
-    BattleEnded
+    BattleEnded,
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -11,7 +11,7 @@ struct Room {
     id: felt252,
     creator: starknet::ContractAddress,
     token: felt252,
-    status: RoomStatus
+    status: RoomStatus,
 }
 
 #[starknet::interface]
@@ -24,42 +24,42 @@ pub trait IRoomManager<TContractState> {
 
 #[starknet::contract]
 pub mod RoomManager {
-
+    use core::hash::{HashStateExTrait, HashStateTrait};
+    use core::poseidon::{PoseidonTrait, poseidon_hash_span};
+    use starknet::storage::{
+        Map, StoragePathEntry, StoragePointerReadAccess, StoragePointerWriteAccess,
+    };
     use starknet::{ContractAddress, get_caller_address};
-    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess, Map, StoragePathEntry};
-    use core::poseidon::PoseidonTrait;
-    use core::poseidon::poseidon_hash_span;
-    use core::hash::{HashStateTrait, HashStateExTrait};
 
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         RoomCreated: RoomCreated,
         BattleStarted: BattleStarted,
-        BattleEnded: BattleEnded
+        BattleEnded: BattleEnded,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct RoomCreated {
         room_id: felt252,
-        created_by: ContractAddress
+        created_by: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct BattleStarted {
         room_id: felt252,
-        started_by: ContractAddress
+        started_by: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct BattleEnded {
         room_id: felt252,
-        ended_by: ContractAddress
+        ended_by: ContractAddress,
     }
 
     #[storage]
     struct Storage {
-        rooms: Map<felt252, super::Room>
+        rooms: Map<felt252, super::Room>,
     }
 
     #[constructor]
@@ -70,7 +70,10 @@ pub mod RoomManager {
         fn create_room(ref self: ContractState, token: felt252) -> felt252 {
             let creator = get_caller_address();
             let status = super::RoomStatus::BeforeBattle;
-            let mut room_id = PoseidonTrait::new().update(creator.try_into().unwrap()).update(token).finalize();
+            let mut room_id = PoseidonTrait::new()
+                .update(creator.try_into().unwrap())
+                .update(token)
+                .finalize();
 
             let mut room = self.rooms.entry(room_id);
             room.id.write(room_id);
@@ -78,10 +81,7 @@ pub mod RoomManager {
             room.token.write(token);
             room.status.write(status);
 
-            self.emit(RoomCreated {
-                room_id,
-                created_by: creator
-            });
+            self.emit(RoomCreated { room_id, created_by: creator });
 
             room_id
         }
@@ -100,10 +100,7 @@ pub mod RoomManager {
 
             room.status.write(super::RoomStatus::BattleStarted);
 
-            self.emit(BattleStarted {
-                room_id,
-                started_by: caller
-            })
+            self.emit(BattleStarted { room_id, started_by: caller })
         }
 
         fn end_battle(ref self: ContractState, room_id: felt252) {
@@ -114,10 +111,7 @@ pub mod RoomManager {
 
             room.status.write(super::RoomStatus::BattleEnded);
 
-            self.emit(BattleEnded {
-                room_id,
-                ended_by: caller
-            })
+            self.emit(BattleEnded { room_id, ended_by: caller })
         }
     }
 }
