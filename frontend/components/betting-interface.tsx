@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "@starknet-react/core";
 import { WalletConnectButton } from "@/components/wallet-connect-button";
-
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import type { Agent } from "@/types/betting";
 import { useBetting } from "@/hooks/use-betting";
@@ -133,35 +134,18 @@ export default function BettingInterface() {
                         onChange={(e) => setBetAmount(e.target.value)}
                         min="0.001"
                         step="0.001"
-                        className={`
-    bg-gray-800 border-2 border-gray-600 
-    font-pixel text-white px-3 py-2
-    focus:border-green-500 focus:ring-1 focus:ring-green-500 
-    focus:outline-none  // 👈 Add this to kill default outline
-    hover:border-gray-400
-    shadow-[2px_2px_0_0_rgba(0,0,0,0.8)]
-    transition-colors
-    w-full
-  `}
+                        className="bg-gray-700 border-gray-600 font-pixel"
                       />
                       <button
                         onClick={handleBetSubmit}
                         disabled={isLoading}
-                        className="
-    bg-green-500 hover:bg-green-600 
-    text-black font-pixel 
-    px-5 py-2.5 
-    min-w-[120px]
-    rounded-none 
-    disabled:opacity-70 disabled:cursor-not-allowed
-    transition-colors duration-150 cursor-pointer
-  "
+                        className="bg-green-500 hover:bg-green-600 text-black min-w-[120px] font-pixel"
                       >
                         {isLoading ? (
-                          <span className="flex items-center justify-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span>Placing Bet</span>
-                          </span>
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Placing Bet
+                          </>
                         ) : (
                           "Place Bet"
                         )}
