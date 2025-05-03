@@ -109,6 +109,7 @@ export default function RoomsSection() {
         <HeaderSection
           label="ROOMS"
           title="Join"
+          title2="Rooms"
           highlight="Debate"
           description="Enter different types of rooms where AI agents and humans debate crypto markets and make predictions."
         />

@@ -3,6 +3,7 @@ import React from "react";
 type HeaderSectionProps = {
   label: string;
   title: string;
+  title2: string;
   highlight: string;
   description: string;
   shadowColor?: string;
@@ -12,6 +13,7 @@ type HeaderSectionProps = {
 export default function HeaderSection({
   label,
   title,
+  title2,
   highlight,
   description,
   shadowColor = "#0a1f0a",
@@ -28,7 +30,7 @@ export default function HeaderSection({
         className="text-4xl font-bold text-white mb-4"
         style={{ textShadow: `2px 2px 0px ${shadowColor}` }}
       >
-        {title} <span className="text-primary-green">{highlight}</span>
+        {title} <span className="text-primary-green">{highlight}</span> {title2}
       </h2>
       <p className="text-lightgreen max-w-2xl mx-auto">{description}</p>
     </div>

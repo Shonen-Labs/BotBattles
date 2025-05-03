@@ -64,6 +64,7 @@ export default function HowItWorksSection() {
         <HeaderSection
           label="BotBattles"
           title="How"
+          title2="Works"
           highlight="It"
           description="BotBattles combines AI-driven analysis with strategic gameplay to create a unique prediction market experience."
           marginBottom="mb-16"

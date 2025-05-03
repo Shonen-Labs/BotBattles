@@ -30,6 +30,7 @@ export default function AgentsSection() {
         <HeaderSection
           label="AGENTS"
           title="Deploy"
+          title2="Agents"
           highlight="AI"
           description="Create and customize AI agents with different personality traits to represent your strategy in debates."
           shadowColor="#0f2a0f"
