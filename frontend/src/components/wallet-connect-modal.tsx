@@ -11,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
 
 interface WalletConnectModalProps {
   isOpen: boolean;
@@ -65,12 +64,12 @@ export default function WalletConnectModal({
         {isOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-50 backdrop-blur-[4px] "
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
-            <DialogContent className="bg-[#0f2a0f] border-2 border-[#3c6e3c] text-white font-mono sm:max-w-md">
+            <DialogContent className="bg-dark border-2 border-green-800 text-white font-mono sm:max-w-md">
               <motion.div
                 className="relative"
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -82,7 +81,7 @@ export default function WalletConnectModal({
                 exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
               >
                 <DialogHeader>
-                  <DialogTitle className="text-[#4eff4e] text-center text-xl mb-6">
+                  <DialogTitle className="text-primary-green text-center text-xl mb-6">
                     Choose a wallet
                   </DialogTitle>
                 </DialogHeader>
@@ -97,8 +96,8 @@ export default function WalletConnectModal({
                       <button
                         className={`w-full flex items-center gap-3 p-3 rounded-sm border-2 transition-all duration-300 font-mono ${
                           selectedWallet === wallet.id
-                            ? "border-[#4eff4e] bg-[#1a3a1a]"
-                            : "border-[#3c6e3c] hover:border-[#4eff4e] hover:bg-[#1a3a1a]/50"
+                            ? "border-primary-green bg-[#1a3a1a]"
+                            : "border-green-800 hover:border-primary-green hover:bg-[#1a3a1a]/50"
                         }`}
                         onClick={() => handleSelect(wallet.id)}
                       >
@@ -111,7 +110,7 @@ export default function WalletConnectModal({
                             className="object-contain"
                           />
                         </div>
-                        <span className="text-[#a3ffa3]">{wallet.name}</span>
+                        <span className="text-lightgreen">{wallet.name}</span>
                       </button>
                     </AnimationWrapper>
                   ))}
@@ -122,9 +121,9 @@ export default function WalletConnectModal({
                   <button
                     onClick={handleConfirm}
                     disabled={!selectedWallet}
-                    className={`w-full py-3 rounded-sm font-mono border-[#4eff4e] border transition-all outline-none duration-300 ${
+                    className={`w-full py-3 rounded-sm font-mono border-primary-green border transition-all outline-none duration-300 ${
                       selectedWallet
-                        ? "bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] border-[#2c582c]"
+                        ? "bg-primary-green hover:bg-green-500 text-white border-emerald-800"
                         : "bg-transparent opacity-50 cursor-not-allowed text-white "
                     }`}
                   >

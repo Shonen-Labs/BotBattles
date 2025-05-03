@@ -1,6 +1,7 @@
 import Navbar from "@/components/navbar";
 import AgentsSection from "@/components/sections/agents";
 import CtaSection from "@/components/sections/cta";
+import Footer from "@/components/sections/footer";
 import HeroSection from "@/components/sections/hero-page";
 import HowItWorksSection from "@/components/sections/how-it-works";
 import RoomsSection from "@/components/sections/rooms";
@@ -13,8 +14,9 @@ const page = () => {
       <HeroSection />
       <RoomsSection />
       <AgentsSection />
-      <HowItWorksSection/>
-      <CtaSection/>
+      <HowItWorksSection />
+      <CtaSection />
+      <Footer />
     </main>
   );
 };

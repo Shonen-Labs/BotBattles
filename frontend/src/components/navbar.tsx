@@ -8,14 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useWalletContext } from "./wallet-provider";
 import AnimationWrapper from "../motion/animation-wrapper";
 import WalletConnectModal from "./wallet-connect-modal";
-import WalletDisconnectModal from "./wallet-disconnect";
 import CopyButton from "./copy-buton";
 import { Button } from "./ui/button";
+import { Close } from "./icons";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
-  const [isDisconnectModalOpen, setIsDisconnectModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -25,19 +24,16 @@ export default function Navbar() {
     useWalletContext();
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -49,33 +45,24 @@ export default function Navbar() {
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   const handleWalletSelect = (walletId: string) => {
     const connector = connectors.find((c) => c.id === walletId);
-    if (connector) {
-      connectWallet(connector);
-    }
+    if (connector) connectWallet(connector);
     setIsConnectModalOpen(false);
   };
 
-  const handleConnectWallet = () => {
-    setIsConnectModalOpen(true);
-  };
-
-  const handleWalletClick = () => {
-    setIsDisconnectModalOpen(true);
-  };
+  const handleConnectWallet = () => setIsConnectModalOpen(true);
 
   const handleDisconnect = () => {
     disconnectWallet();
-    setIsDisconnectModalOpen(false);
   };
 
   const navLinks = [
     { href: "#rooms", name: "Rooms" },
     { href: "#agents", name: "Agents" },
-    { href: "#how-it-works", name: "PvPvAI" },
+    { href: "#how-it-works", name: "About" },
   ];
 
   return (
@@ -83,214 +70,139 @@ export default function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-[#0f2a0f]/90 backdrop-blur-sm py-2"
+            ? "bg-dark/90 backdrop-blur-sm py-2"
             : "bg-transparent py-4"
         }`}
       >
-        <div className="container mx-auto pl-4 pr-4 lg:px-20 flex items-center justify-between">
+        <div className="container mx-auto px-4 lg:px-20 flex items-center justify-between">
+          {/* Logo */}
           <AnimationWrapper variant="slideRight">
             <Link href="/">
-              <h1
-                className="text-2xl md:text-4xl font-bold text-white font-mono leading-tight tracking-wider"
-                style={{ textShadow: "3px 3px 0px #0f2a0f" }}
-              >
-                <span className="text-[#4eff4e]">PVP</span>V
-                <span className="text-[#4eff4e]">AI</span>
+              <h1 className="font-bold text-white tracking-wider">
+                <span className="text-2xl md:hidden">
+                  B<span className="text-primary-green">B</span>
+                </span>
+
+                <span className="hidden md:inline text-4xl">
+                  BOT<span className="text-primary-green">BATTLES</span>
+                </span>
               </h1>
             </Link>
           </AnimationWrapper>
 
-          <div className="flex items-center justify-center gap-2">
-            <nav className="hidden md:flex items-center">
+          <div className="flex items-center gap-4">
+            {/* Desktop Nav Links */}
+            <nav className="hidden md:flex gap-6">
               {navLinks.map((link) => (
-                <AnimationWrapper variant="slideRight" key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="mx-4 text-gray-200 hover:text-green-400 font-medium transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </AnimationWrapper>
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="text-lightgreen hover:text-green-500 font-medium"
+                >
+                  {link.name}
+                </Link>
               ))}
             </nav>
 
-            {/* Desktop Wallet */}
-            <div className="hidden md:block">
-              <AnimationWrapper variant="slideLeft">
-                {!account ? (
-                  <Button
-                    className="bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] font-mono border-b-2 border-[#2c582c] hover:translate-y-1 transition-all"
-                    onClick={handleConnectWallet}
-                  >
-                    Connect Wallet
-                  </Button>
-                ) : (
-                  <div className="relative" ref={dropdownRef}>
-                    <div
-                      onClick={handleWalletClick}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-gray-800 bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] cursor-pointer hover:border-gray-600 transition-colors"
-                    >
-                      <div className="h-8 w-8 rounded-full border-2 border-green-500 overflow-hidden">
-                        <Image
-                          src="/avatar.jpg"
-                          alt="Wallet Avatar"
-                          width={32}
-                          height={32}
-                          className="object-cover"
-                        />
-                      </div>
-                      <span className="text-white font-medium">
-                        {account.slice(0, 6)}…{account.slice(-4)}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDropdown();
-                        }}
-                        className="h-8 w-8 text-green-400 hover:text-white transition-transform"
-                      >
-                        <span
-                          className={`inline-block transform transition-transform duration-300 ${
-                            isDropdownOpen ? "rotate-180" : ""
-                          }`}
-                        >
-                          <ChevronDown className="w-4 h-4 text-white cursor-pointer" />
-                        </span>
-                      </button>
-
-                      <CopyButton
-                        copyText={account || ""}
-                        className="cursor-pointer"
-                      />
-                    </div>
-
-                    {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 rounded-md  border-2 border-[#3c6e3c] shadow-lg overflow-hidden">
-                        <div className="bg-[#0f2a0f] p-2 space-y-4 text-[#a3ffa3] font-mono">
-                          <button
-                            onClick={handleWalletClick}
-                            className="hover:text-[#baf9ba] text-[#4eff4e] cursor-pointer flex items-center gap-2"
-                          >
-                            <LogOutIcon className="h-4 w-4" />
-                            Disconnect
-                          </button>
-                          <Link
-                            href="#"
-                            className=" text-[#4eff4e] hover:text-[#baf9ba] cursor-pointer flex items-center gap-2"
-                          >
-                            <User className="h-4 w-4" />
-                            View Profile
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </AnimationWrapper>
-            </div>
-          </div>
-          {/* Mobile Wallet + Menu */}
-          <div className="md:hidden flex items-center">
-            <AnimationWrapper variant="slideLeft">
+            {/* Wallet Section */}
+            <div className="relative" ref={dropdownRef}>
               {!account ? (
                 <Button
-                  className="bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] font-mono border-b-2 border-[#2c582c] hover:translate-y-1 transition-all"
                   onClick={handleConnectWallet}
+                  className="bg-primary-green hover:bg-green-600 text-white"
                 >
                   Connect Wallet
                 </Button>
               ) : (
-                <div className="relative" ref={dropdownRef}>
-                  <div
-                    onClick={handleWalletClick}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-gray-800 bg-[#4eff4e] hover:bg-[#3ccc3c] text-[#0f2a0f] cursor-pointer hover:border-gray-600 transition-colors"
+                <div className="flex items-center gap-2 bg-primary-green text-dark px-3 py-2 rounded-md cursor-pointer border border-gray-700">
+                  <div className="h-8 w-8 rounded-full overflow-hidden border-2 border-green-600">
+                    <Image
+                      src="/avatar.jpg"
+                      alt="Wallet"
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="font-medium text-lightgreen text-nowrap">
+                    {account.slice(0, 6)}…{account.slice(-4)}
+                  </span>
+                  <CopyButton copyText={account} />
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown();
+                    }}
+                    className="ml-1 text-lightgreen"
                   >
-                    <div className="h-8 w-8 rounded-full border-2 border-green-500 overflow-hidden">
-                      <Image
-                        src="/avatar.jpg"
-                        alt="Wallet Avatar"
-                        width={32}
-                        height={32}
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-white font-medium">
-                      {account.slice(0, 6)}…{account.slice(-4)}
-                    </span>
+                    <ChevronDown
+                      className={`h-4 w-4 transform transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
+
+              {/* Dropdown */}
+              {isDropdownOpen && account && (
+                <div className="absolute right-0 mt-2 w-48 rounded-md border border-green-700 bg-dark shadow-lg">
+                  <div className="p-3 space-y-3 text-primary-green">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleDropdown();
+                        handleDisconnect();
+                        setIsDropdownOpen(false);
                       }}
-                      className="h-8 w-8 text-green-400 hover:text-white transition-transform"
+                      className="flex items-center gap-2 hover:text-lightgreen"
                     >
-                      <span
-                        className={`inline-block transform transition-transform duration-300 ${
-                          isDropdownOpen ? "rotate-180" : ""
-                        }`}
-                      >
-                        <ChevronDown className="w-4 h-4 text-white cursor-pointer" />
-                      </span>
+                      <LogOutIcon className="w-4 h-4" />
+                      Disconnect
                     </button>
-
-                    <CopyButton
-                      copyText={account || ""}
-                      className="cursor-pointer"
-                    />
+                    <Link
+                      href="#"
+                      className="flex items-center gap-2 hover:text-lightgreen"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      View Profile
+                    </Link>
                   </div>
-
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md  border-2 border-[#3c6e3c] shadow-lg overflow-hidden">
-                      <div className="bg-[#0f2a0f] p-2 space-y-4 text-[#a3ffa3] font-mono">
-                        <button
-                          onClick={handleWalletClick}
-                          className="hover:text-[#baf9ba] text-[#4eff4e] cursor-pointer flex items-center gap-2"
-                        >
-                          <LogOutIcon className="h-4 w-4" />
-                          Disconnect
-                        </button>
-                        <Link
-                          href="#"
-                          className=" text-[#4eff4e] hover:text-[#baf9ba] cursor-pointer flex items-center gap-2"
-                        >
-                          <User className="h-4 w-4" />
-                          View Profile
-                        </Link>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
-            </AnimationWrapper>
+            </div>
 
-            <Menu onClick={toggleMenu} className="ml-2" />
+            {/* Mobile Menu */}
+            <div className="md:hidden">
+              {isMenuOpen ? (
+                <Close onClick={toggleMenu} className="cursor-pointer" />
+              ) : (
+                <Menu onClick={toggleMenu} className="cursor-pointer" />
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Nav */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden overflow-hidden bg-[#0a0b1e]"
+              className="md:hidden bg-green-800 overflow-hidden mt-2"
             >
-              <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {navLinks.map((link, index) => (
-                  <AnimationWrapper
+              <div className="px-4 py-4 space-y-4">
+                {navLinks.map((link) => (
+                  <Link
                     key={link.name}
-                    variant="slideRight"
-                    delay={index * 0.1}
+                    href={link.href}
+                    className="block text-lightgreen hover:text-white"
+                    onClick={() => setIsMenuOpen(false)}
                   >
-                    <Link
-                      href={link.href}
-                      className="text-gray-300 hover:text-white transition-colors block py-2"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.name}
-                    </Link>
-                  </AnimationWrapper>
+                    {link.name}
+                  </Link>
                 ))}
               </div>
             </motion.div>
@@ -298,16 +210,11 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
 
+      {/* Modals */}
       <WalletConnectModal
         isOpen={isConnectModalOpen}
         onClose={() => setIsConnectModalOpen(false)}
         onSelect={handleWalletSelect}
-      />
-
-      <WalletDisconnectModal
-        isOpen={isDisconnectModalOpen}
-        onClose={() => setIsDisconnectModalOpen(false)}
-        onDisconnect={handleDisconnect}
       />
     </>
   );
