@@ -5,19 +5,19 @@ const mockAgents: Agent[] = [
   {
     id: 1,
     name: "Mark Cuban",
-    image: "/bet-image1.jpg",
+    image: "/placeholder.svg?height=100&width=100&text=Mark",
     performance: 75,
   },
   {
     id: 2,
     name: "Batman",
-    image: "/bet-image3.jpg",
+    image: "/placeholder.svg?height=100&width=100&text=Batman",
     performance: 45,
   },
   {
     id: 3,
     name: "Literally a fish",
-    image: "/bet-image2.jpg",
+    image: "/placeholder.svg?height=100&width=100&text=Fish",
     performance: 90,
   },
 ];

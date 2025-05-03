@@ -7,7 +7,6 @@ import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import type { Agent } from "@/types/betting";
 import { useBetting } from "@/hooks/use-betting";
 import { getAgents } from "@/lib/starknet";
-import Image from "next/image";
 
 export default function BettingInterface() {
   const { address, isConnected } = useAccount();
@@ -89,12 +88,10 @@ export default function BettingInterface() {
                   >
                     <div className="flex flex-col items-center">
                       <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-500 mb-2">
-                        <Image
-                          src={agent.image}
+                        <img
+                          src={agent.image || "/placeholder.svg"}
                           alt={agent.name}
-                          width={80}
-                          height={80}
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <h3 className="text-lg font-medium font-pixel text-white">
