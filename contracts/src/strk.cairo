@@ -6,7 +6,7 @@ trait IExternal<ContractState> {
     fn mint(ref self: ContractState, recipient: ContractAddress, amount: u256);
 }
 #[starknet::contract]
-pub mod STARKTOKEN {
+pub mod STRK {
     use core::byte_array::ByteArray;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::IERC20Metadata;

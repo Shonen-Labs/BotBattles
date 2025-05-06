@@ -19,11 +19,11 @@ use starknet::{
 #[starknet::interface]
 pub trait IBetting<TContractState> {
     fn place_bet(ref self: TContractState, room_id: u256, agent_id: u256, amount: u256);
-    fn resolve_bet(ref self: TContractState, room_id: u256, winner: ContractAddress);
+    fn resolve_bet(ref self: TContractState, room_id: u256, winner: u256);
     fn get_bet_amount(self: @TContractState, room_id: u256) -> u256;
-    fn withdraw_winnings(ref self: TContractState, room_id: u256, amount: u256);
+    fn withdraw_winnings(ref self: TContractState, room_id: u256);
 
-    fn create_pool(ref self: TContractState);
+    fn create_game(ref self: TContractState) -> u256;
 }
 
 #[starknet::contract]
@@ -52,14 +52,16 @@ mod Betting {
     #[storage]
     struct Storage {
         bets_total_amount: Map<(u256, u256), u256>, // room id, agent id, amount in the pool
-        room: Map<u256, Battle>, // room if to battle details
+        room: Map<u256, Battle>, // room id to battle details
+        rooms_len: u256, // total number of rooms
         token_addr: ContractAddress,
         room_players: Map<
             u256, Vec<ContractAddress>,
         >, // a room id to the list of players in the room 
         player_stake: Map<
-            (ContractAddress, u256, u256), u256,
-        >, // (contract adddress of the payer that stakes and the room id with the agent he staekd on) to the amount the player stakes
+            (ContractAddress, u256), (u256, u256),
+        >, // (playerAddress, room id) to (agent, amount)
+        winner: Map<u256, u256>, // room id to the winner agent id
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -84,16 +86,15 @@ mod Betting {
 
     #[derive(Drop, starknet::Event)]
     pub struct BetPlaced {
-        room_id: felt252,
+        room_id: u256,
         player: ContractAddress,
-        amount: felt252,
+        amount: u256,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct BetResolved {
-        room_id: felt252,
-        winner: ContractAddress,
-        amount: felt252,
+        room_id: u256,
+        winner: u256,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -138,8 +139,7 @@ mod Betting {
             self.room_players.entry(room_id).push(caller);
 
             // record what the player has staked
-            self.player_stake.entry((caller, room_id, agent_id)).write(amount);
-
+            self.player_stake.entry((caller, room_id)).write((agent_id, amount));
 
             let caller = get_caller_address();
             let dispatcher = IERC20Dispatcher { contract_address: self.token_addr.read() };
@@ -155,21 +155,60 @@ mod Betting {
 
             // Transfer the tokens
             dispatcher.transfer_from(caller, contract_address, amount);
+
+            self.emit(BetPlaced { room_id: room_id, player: caller, amount: amount })
         }
 
-        fn resolve_bet(ref self: ContractState, room_id: u256, winner: ContractAddress) {}
+        fn resolve_bet(ref self: ContractState, room_id: u256, winner: u256) {
+            self.accesscontrol.assert_only_role(ADMIN_ROLE);
+            self.winner.entry(room_id).write(winner);
+        }
 
         fn get_bet_amount(self: @ContractState, room_id: u256) -> u256 {
-            1
+            let caller = get_caller_address();
+            let (_, bet_amount): (u256, u256) = self.player_stake.entry((caller, room_id)).read();
+            assert(bet_amount > 0, 'no bets placed');
+            bet_amount
         }
 
-        fn withdraw_winnings(ref self: ContractState, room_id: u256, amount: u256) {}
+        fn withdraw_winnings(ref self: ContractState, room_id: u256) {
+            // logic for calculating the winnings not yet explained so
+            // we are giving everyone their money and 10 strk back
+            let caller = get_caller_address();
+            let (agent_id, bet_amount): (u256, u256) = self
+                .player_stake
+                .entry((caller, room_id))
+                .read();
+            assert(bet_amount > 0, 'no bets placed');
+            let get_winner_of_the_room = self.winner.entry(room_id).read();
+            assert(get_winner_of_the_room > 0, 'room not resolved yet');
+            assert(get_winner_of_the_room == agent_id, 'you are not the winner');
+            let dispatcher = IERC20Dispatcher { contract_address: self.token_addr.read() };
+            let contract_balance = dispatcher.balance_of(get_contract_address());
+            assert(contract_balance >= bet_amount + 10, 'not enough balance fr contract');
 
-        fn create_pool(ref self: ContractState) {}
+            dispatcher.transfer(caller, bet_amount + 10);
+        }
+
+        fn create_game(ref self: ContractState) -> u256 {
+            self.accesscontrol.assert_only_role(ADMIN_ROLE);
+            let new_room: u256 = self.rooms_len.read() + 1;
+            let new_battle = Battle {
+                first_agent_id: 24, // random and default for now
+                second_agent_id: 66 // logic for creating of agents not yet implemendted
+            };
+            self.room.entry(new_room).write(new_battle);
+            self.rooms_len.write(new_room);
+            new_room
+        }
     }
 
     #[external(v0)]
-    fn set_winner(ref self: ContractState, room_id: u256, agent_id: u256, winner: felt252) -> u256 {
-        256
+    fn set_winner(ref self: ContractState, room_id: u256, agent_id: u256) {
+        self.accesscontrol.assert_only_role(ADMIN_ROLE);
+        let get_winner_of_the_room = self.winner.entry(room_id).read();
+        assert(get_winner_of_the_room == 0, 'room already resolved');
+        self.winner.entry(room_id).write(agent_id);
+        self.emit(BetResolved { room_id: room_id, winner: agent_id });
     }
 }
