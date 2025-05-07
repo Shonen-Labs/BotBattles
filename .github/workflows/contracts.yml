@@ -2,44 +2,45 @@ name: Contracts CI
 
 on:
   push:
-    paths:
-      - 'contracts/**'  
     branches: [main, develop]
   pull_request:
-    paths:
-      - 'contracts/**'
     branches: [main, develop]
-
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./contracts  
     steps:
-      - uses: actions/checkout@v4   
-      
-      - uses: software-mansion/setup-scarb@v1
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          scarb-version: "2.11.4"   
-     
-      - uses: foundry-rs/setup-snfoundry@v3
-        with:
-          starknet-foundry-version: "0.31.0"   
-      
-      
-      - name: Check Versions
+          toolchain: stable
+          override: true
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v2
+
+      - name: Install plugins
         run: |
-          scarb --version
-          snforge -V
-      
-      
-      - name: Format Check
-        run: scarb fmt --check
-      
-  
-      - name: Run Tests
-        run: snforge test
-      
-      - name: Build Project
-        run: scarb build
+          asdf plugin add scarb
+          asdf install scarb 2.11.4
+          asdf global scarb 2.11.4
+          asdf plugin add starknet-foundry
+          asdf install starknet-foundry 0.31.0
+          asdf global starknet-foundry 0.31.0
+
+      - name: Build contracts
+        run: |
+          cd contracts/
+          scarb build
+
+      - name: Run tests
+        run: |
+          cd contracts/
+          snforge test
+
+      - name: Check formatting
+        run: |
+          cd contracts/
+          scarb fmt --check
