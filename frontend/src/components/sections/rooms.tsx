@@ -13,6 +13,7 @@ import AnimatedBackground from "@/motion/background-particles";
 import TabNavigation from "../tab-navigation";
 import { Button } from "../ui/button";
 import HeaderSection from "../header";
+import CreateRoom from "../create-room";
 
 export interface Room {
   id: number;
@@ -84,6 +85,7 @@ export default function RoomsSection() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
   const [activeTab, setActiveTab] = useState("all");
+  const [isOpen, setIsOpen] = useState(false);
 
   const filteredRooms =
     activeTab === "all"
@@ -124,6 +126,7 @@ export default function RoomsSection() {
         <MobileRoomCards rooms={filteredRooms} isInView={isInView} />
         <div className="flex justify-end">
           <Button
+            onClick={() => setIsOpen(true)}
             className="bg-primary-green hover:bg-[#3ccc3c] text-white border-[#2c582c] hover:translate-y-1 transition-all"
             style={{
               opacity: isInView ? 1 : 0,
@@ -134,6 +137,7 @@ export default function RoomsSection() {
             Create Room
             <ArrowUpDown className="ml-2 h-5 w-5" />
           </Button>
+          <CreateRoom isOpen={isOpen} onClose={setIsOpen} />
         </div>
       </div>
     </section>
