@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 pre-commit = "^4.2.0"
+uvicorn = {extras = ["standard"], version = "^0.34.2"}
 
 
 [build-system]
