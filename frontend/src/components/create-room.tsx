@@ -2,13 +2,18 @@
 
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DollarSign, MessageSquare, TrendingDown, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogOverlay, DialogPortal, DialogTrigger } from "./ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal } from "./ui/dropdown-menu";
 
 interface createRoomProps {
     isOpen: boolean;
     onClose: (isOpen: boolean) => void;
 }
+
+const networks = ["Ethereum", "Solana", "Polygon", "Bitcoin"];
+const typeRoom = ["All", "Buy / Hold / Sell", "Long / Short", "Just Chat"];
 
 function CreateRoom({
     isOpen,
@@ -34,19 +39,69 @@ function CreateRoom({
                                     <input type="text" placeholder="Enter room name" className="w-full h-10 border rounded px-2" />
                                 </div>
                                 <div className="col-start-1 row-start-2">
-                                    <label className="font-bold">Room type</label>
-                                    <input type="text" placeholder="Select type" className="w-full h-10 border rounded px-2" />
+                                    <label className="font-bold">Network</label>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger className="w-full">
+                                            <Button className="w-full">
+                                                Select your network
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuContent className="min-w-[180px] bg-white rounded-md shadow-md p-2 border border-gray-200">
+                                                {networks.map((network) => (
+                                                    <DropdownMenuItem key={network} className="px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">
+                                                        {network}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenu>
                                 </div>
                                 <div className="col-start-2 row-start-2">
-                                    <label className="font-bold">Network</label>
-                                    <input type="text" placeholder="Select network" className="w-full h-10 border rounded px-2" />
+                                    <label className="font-bold">Room type</label>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger className="w-full">
+                                            <Button  variant="default" className="w-full">
+                                                Select your type room
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuContent className="min-w-[180px] bg-white rounded-md shadow-md p-2 border border-gray-200">
+                                                {typeRoom.map((room) => (
+                                                    <DropdownMenuItem key={room} className="px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">
+                                                        {room}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenu>
                                 </div>
                                 <div className="col-span-2 col-start-1 row-start-3">
                                     <label className="font-bold">Required Number of Agents</label>
-                                    <input type="text" placeholder="Enter number of agents" className="w-full h-10 border rounded px-2" />
+                                    <input type="number" placeholder="Enter number of agents" className="w-full h-10 border rounded px-2" />
+                                </div>
+                                <div className="col-span-2 col-start-1 row-start-4">
+                                    <label>Choose your icon</label>
+                                    <div className="flex flex-row gap-12 justify-center items-center mt-4">
+                                        <Button variant="ghost" className="border border-white rounded-lg w-18 h-18">
+                                            <TrendingUp className="h-15 w-15" />
+                                        </Button>
+                                        <Button variant="ghost" className="border border-white rounded-lg w-18 h-18">
+                                            <MessageSquare className="h-15 w-15" />
+                                        </Button>
+                                        <Button variant="ghost" className="border border-white rounded-lg w-18 h-18">
+                                            <DollarSign className="h-15 w-15" />
+                                        </Button>
+                                        <Button variant="ghost" className="border border-white rounded-lg w-18 h-18">
+                                            <TrendingDown className="h-15 w-15" />
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                            <Button variant="secondary" className="bg-[#2c582c] text-white hover:bg-[#3ccc3c] hover:font-bold mt-4 ml-auto">Create Room</Button>
+                            <div className="mt-8 ml-auto flex flex-row gap-4">
+                                <Button variant="outline" className="text-black">Cancel</Button>
+                                <Button variant="secondary" className="bg-[#2c582c] text-white hover:bg-[#3ccc3c] hover:font-bold">Create Room</Button>
+                            </div>
                         </form>
                     </div>
                 </DialogContent>
