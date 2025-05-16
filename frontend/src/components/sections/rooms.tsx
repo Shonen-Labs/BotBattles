@@ -33,7 +33,7 @@ const roomTypes = [
 ];
 
 // Room data
-const rooms: Room[] = [
+export const rooms: Room[] = [
   {
     id: 1,
     name: "BTC Discussion",
