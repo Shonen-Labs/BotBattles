@@ -5,19 +5,6 @@ import DebateHeader from "@/components/room/debate-header";
 import Desicion from "@/components/room/desicion";
 import UserProfile from "@/components/room/user-profile";
 import { rooms } from "@/components/sections/rooms";
-import { Button } from "@/components/ui/button";
-import {
-  BadgeEuro,
-  Clock3,
-  ClockAlert,
-  Gift,
-  HandCoins,
-  Radio,
-  Send,
-  TrendingUp,
-  User,
-  Users,
-} from "lucide-react";
 import { notFound } from "next/navigation";
 
 export type Props = {
@@ -37,8 +24,8 @@ export default async function roomById({ params }: Props) {
   if (!roomId) return notFound();
 
   return (
-    <div className="w-full min-h-screen bg-emerald-900 p-4 text-white">
-      <div className="grid grid-cols-5 grid-rows-5 gap-4">
+    <div className="w-full min-h-screen bg-blue-900/60 p-4 text-white">
+      <div className="grid grid-cols-5 grid-rows-5 gap-2">
         <DebateHeader params={{ id: params.id }} />
         <UserProfile name="Jhon Doe" profession="Trader" />
         <Chat user1="Jhon Doe" user2="user2" />

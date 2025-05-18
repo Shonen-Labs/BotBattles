@@ -11,7 +11,7 @@ type PropsUser = {
 export default function UserProfile({ name, profession }: PropsUser) {
     return (
         <div className="row-span-3 col-start-1 row-start-2">
-            <section className="w-full h-full border border-white/50 rounded p-4">
+            <section className="w-full h-[80%] border border-white/50 rounded p-4">
                 <h2 className="font-bold mb-6">Your Profile</h2>
                 <div className="flex flex-row gap-4 items-center">
                     <User className="w-18 h-18 border border-white rounded-full p-1" />

@@ -35,7 +35,7 @@ export default function Chat({ user1, user2 }: chatProps) {
 
     return (
         <div className="col-span-3 row-span-2 col-start-2 row-start-2">
-            <main className="h-[320px] w-full border border-white rounded overflow-hidden flex flex-col">
+            <main className="h-[360px] w-full border border-white rounded overflow-hidden flex flex-col">
                 <section className="w-full h-full mx-auto rounded p-4 flex flex-col gap-2">
                     <h2 className="font-bold text-2xl">Debate Chat</h2>
                     <div className="w-full flex-1 flex flex-col overflow-y-auto p-2 gap-4 border border-white/10 rounded-lg">
